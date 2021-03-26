@@ -1,21 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
 // @flow
-import * as React from "react";
-import dayjs from "dayjs";
-import { nanoid } from "nanoid";
-import { Text } from "@visx/text";
-import { Group } from "@visx/group";
-import Link from "next/link";
-import { motion } from "framer-motion";
-
-import colorHash from "../lib/colorHash";
-
-const StateContext = React.createContext(null);
-const DispatchContext = React.createContext(null);
+import * as React from 'react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { nanoid } from 'nanoid';
+import Link from 'next/link';
+import Avatar from '../components/Avatar';
+import Chevron from '../components/Chevron';
+import Layout from '../components/Layout';
+import Stats from '../components/Stats';
 
 function stateReducer(state, action) {
   switch (action.type) {
-    case "ADD_PERSON":
+    case 'ADD_PERSON':
       return {
         ...state,
       };
@@ -27,154 +24,91 @@ function stateReducer(state, action) {
 
 const Home = () => {
   const days = 12;
-  const [state, dispatch] = React.useReducer(stateReducer, {
-    days: new Array(days).fill(),
-  });
   return (
     <div className="">
-      <StateContext.Provider value={state}>
-        <DispatchContext.Provider value={dispatch}>
-          <List days={days} />
-        </DispatchContext.Provider>
-      </StateContext.Provider>
+      <List days={days} />
     </div>
   );
-};
-
-// Our custom easing
-let easing = [0.6, -0.05, 0.01, 0.99];
-
-// animate: defines animation
-// initial: defines initial state of animation or stating point.
-// exit: defines animation when component exits
-
-// Custom variant
-const fadeInUp = {
-  initial: {
-    x: -60,
-    opacity: 0,
-    transition: { duration: 0.2, ease: easing },
-  },
-  animate: {
-    x: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.2,
-      ease: easing,
-    },
-  },
-};
-
-const stagger = {
-  animate: {
-    transition: {
-      staggerChildren: 0.02,
-    },
-  },
 };
 
 type ListProps = {
   days: number,
 };
 
+dayjs.extend(relativeTime);
+
 const List = ({ days }: ListProps) => {
   const startDate = dayjs();
   const dayArray = new Array(days).fill();
   return (
-    <motion.div initial="initial" animate="animate" exit={{ opacity: 0 }}>
-      <div className="flex items-center justify-center md:w-1/2 mx-auto">
-        <motion.ol variants={stagger} className="divide-y w-full">
-          {dayArray.map((_, index) => {
-            const date = startDate.subtract(index, "d");
-            return (
-              <Day key={nanoid()}>
-                <Link href={`/day/${date.format("YYYY-MM-DD")}`} scroll={false}>
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                  <motion.a
-                    whileTap={{ scale: 0.98 }}
-                    className="flex items-center justify-between cursor-pointer"
-                  >
-                    <span className="">{date.format("dddd D MMM")}</span>
-                    <span className="inline-block ml-auto">
-                      <span className="flex">
-                        <TextAvatar className="w-8 flex-initial">P</TextAvatar>
-                        <TextAvatar className="w-8 flex-initial -ml-3">
-                          B
-                        </TextAvatar>
-                        <TextAvatar className="w-8 flex-initial -ml-3">
-                          R
-                        </TextAvatar>
+    <Layout>
+      <div className="md:flex-row md:items-center md:justify-between">
+        <div className="flex-1 min-w-0 mb-8">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            NearMe
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="inline-block ml-2 w-8 h-8 align-text-bottom stroke-[#ed669d]">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Helps you track your encounters (or friends if you have that)
+          </p>
+        </div>
+        <div className="mb-8">
+          <Stats />
+        </div>
+        <h3 className="text-lg leading-6 font-medium text-gray-900">History</h3>
+        <div className=" mt-5 bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
+          <ol className="divide-y w-full">
+            {dayArray.map((_, index) => {
+              const date = startDate.subtract(index, 'd');
+              const isToday = index === 0;
+              return (
+                <div key={nanoid()} className="py-4 px-4">
+                  <Link
+                    href={`/day/${date.format('YYYY-MM-DD')}`}
+                    scroll={false}>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a className="flex items-center justify-between cursor-pointer">
+                      <span className="">
+                        {isToday ? (
+                          <span className="text-gray-500 text-sm block">
+                            Today
+                          </span>
+                        ) : (
+                          <span className="text-gray-500 text-sm block">
+                            {date.fromNow()}
+                          </span>
+                        )}
+                        {date.format('dddd D MMM')}
                       </span>
-                    </span>
-                    <span className="inline-block ">
-                      <ChevronIcon />
-                    </span>
-                  </motion.a>
-                </Link>
-              </Day>
-            );
-          })}
-        </motion.ol>
+                      <span className="inline-block ml-auto">
+                        <Avatar>P</Avatar>
+                        <Avatar overlap>B</Avatar>
+                        <Avatar overlap>R</Avatar>
+                      </span>
+                      <span className="inline-block ">
+                        <Chevron />
+                      </span>
+                    </a>
+                  </Link>
+                </div>
+              );
+            })}
+          </ol>
+        </div>
       </div>
-    </motion.div>
+    </Layout>
   );
 };
 
-type DayProps = {
-  children: React.Node,
-};
-
-const Day = ({ children }: DayProps) => (
-  <motion.div variants={fadeInUp} className="py-2 px-6">
-    {children}
-  </motion.div>
-);
-
-type ChevronIconProps = {};
-
-const ChevronIcon = ({}: ChevronIconProps) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    className="text-gray-400 w-6 h-6"
-  >
-    <path
-      fill="currentColor"
-      d="M10.3 8.7a1 1 0 0 1 1.4-1.4l4 4a1 1 0 0 1 0 1.4l-4 4a1 1 0 0 1-1.4-1.4l3.29-3.3-3.3-3.3z"
-    />
-  </svg>
-);
-
-type TextAvatarProps = {|
-  children: string,
-|};
-
-const TextAvatar = ({ children, ...rest }: TextAvatarProps) => {
-  return (
-    <svg {...rest} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <Group>
-        <circle
-          cx="12"
-          cy="12"
-          r="10"
-          fill={colorHash(children).hex}
-          stroke="white"
-          strokeWidth="1px"
-        />
-        <Text
-          width={24}
-          x={24 / 2}
-          y={24 / 2}
-          fill="white"
-          style={{ fontSize: "80%" }}
-          verticalAnchor="middle"
-          textAnchor="middle"
-        >
-          {children.charAt(0)}
-        </Text>
-      </Group>
-    </svg>
-  );
-};
-
-export default (Home: React.StatelessFunctionalComponent<Props>);
+export default (Home: React.StatelessFunctionalComponent<{||}>);
