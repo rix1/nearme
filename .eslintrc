@@ -3,5 +3,10 @@
     "browser": true
   },
   "parser": "babel-eslint",
-  "extends": ["@otovo/eslint-config-otovo/react-recommended"]
+  "extends": ["@otovo/eslint-config-otovo/react-recommended"],
+  "rules": {
+    "react/require-default-props": "off",
+    "react/default-props-match-prop-types": "off",
+    "react/jsx-props-no-spreading": "off"
+  }
 }
