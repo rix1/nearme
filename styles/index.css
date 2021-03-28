@@ -48,3 +48,38 @@
 .collapsible[data-state="closed"]{
   animation: slideUp 300ms ease-out
 }
+
+
+@keyframes popover-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popover-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popover {
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-duration: 0.6s;
+}
+
+.popover[data-side="top"]{
+  animation-name: popover-slide-up;
+ }
+.popover[data-side="bottom"]{
+  animation-name: popover-slide-down;
+ }

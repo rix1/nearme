@@ -4,7 +4,9 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import * as Collapsible from '@radix-ui/react-collapsible';
+import * as Popover from '@radix-ui/react-popover';
 import toast from 'react-hot-toast';
+import { nanoid } from 'nanoid';
 
 import Chevron from '../../components/Chevron';
 import Layout from '../../components/Layout';
@@ -50,6 +52,7 @@ const DatePage = ({}: Props) => {
       name: name.trim(),
       duration,
       date: meetDate,
+      id: nanoid(),
     };
     addPersonToStore(newPerson, storedDate);
     toast.success(`${name} added`);
@@ -88,7 +91,7 @@ const DatePage = ({}: Props) => {
                       type="text"
                       name="name"
                       id="name"
-                      autoComplete={false}
+                      autoComplete="off"
                       className="focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-solid border-[1px] border-gray-300"
                       placeholder="John Doe"
                       required
@@ -114,7 +117,7 @@ const DatePage = ({}: Props) => {
                       type="number"
                       name="duration"
                       id="duration"
-                      autoComplete={false}
+                      autoComplete="off"
                       className="-ml-px focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none pl-10 pr-2 sm:text-sm border-solid border-[1px] border-gray-300"
                       placeholder="2 hours"
                       required
@@ -154,8 +157,8 @@ const DatePage = ({}: Props) => {
               <ul className="-mb-8">
                 {peeps.map((person, index) => (
                   <ListItem
-                    name={person.name}
-                    duration={person.duration}
+                    key={person.name}
+                    person={person}
                     isLast={index === peeps.length - 1}
                   />
                 ))}
@@ -178,7 +181,6 @@ type DayHeadingProps = {|
 |};
 
 const DayHeading = ({ label, children }: DayHeadingProps) => {
-  const addFish = useStore((state) => state.addAFish);
   return (
     <div className="mb-8">
       <div>
@@ -246,55 +248,82 @@ const DayHeading = ({ label, children }: DayHeadingProps) => {
   );
 };
 
-type ListItemProps = {
+type ListItemProps = {|
   isLast: boolean,
-  name: string,
-  duration: string,
-};
+  person: Person,
+|};
 
-const ListItem = ({ name, duration, isLast }: ListItemProps) => (
-  <li>
-    <div className="relative pb-8">
-      {!isLast && (
-        <span
-          className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
-          aria-hidden="true"
-        />
-      )}
-      <div className="relative flex space-x-3">
-        <div>
-          <span className="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-            <svg
-              className="w-5 h-5 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true">
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </span>
-        </div>
-        <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+const ListItem = ({ person, isLast }: ListItemProps) => {
+  const removePerson = useStore((state) => state.removePerson);
+  return (
+    <li>
+      <div className="relative pb-8">
+        {!isLast && (
+          <span
+            className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"
+            aria-hidden="true"
+          />
+        )}
+        <div className="relative flex space-x-3">
           <div>
-            <p className="text-sm text-gray-500">
-              Hanged out with{' '}
-              <span className="font-medium text-gray-900">
-                {/* IDEA: Link to user profile?? */}
-                {name}
-              </span>
-            </p>
+            <span className="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
+              <svg
+                className="w-5 h-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true">
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
           </div>
-          <div className="text-right text-sm whitespace-nowrap text-gray-500">
-            <time dateTime="2020-09-20">{duration} hours</time>
+          <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+            <div>
+              <p className="text-sm text-gray-500">
+                Hanged out with{' '}
+                <span className="font-medium text-gray-900">
+                  {/* IDEA: Link to user profile?? */}
+                  {person.name}
+                </span>
+              </p>
+            </div>
+            <Popover.Root>
+              <div className="text-right text-sm whitespace-nowrap text-gray-500">
+                <time dateTime="2020-09-20" className="inline-block mr-3">
+                  {person.duration} hours
+                </time>
+                <Popover.Trigger>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-4 h-4 inline-block cursor-pointer">
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Popover.Trigger>
+                <Popover.Content className="shadow-md bg-red-100 text-red-800 p-4 rounded-md popover">
+                  <h3 className="font-bold">Remove item?</h3>
+                  <p>Are you sure you wanna do this?</p>
+                  <Popover.Close onClick={() => removePerson(person)}>
+                    Yes
+                  </Popover.Close>
+                  <Popover.Arrow className="fill-current text-red-100" />
+                </Popover.Content>
+              </div>
+            </Popover.Root>
           </div>
         </div>
       </div>
-    </div>
-  </li>
-);
+    </li>
+  );
+};
 
 export default (DatePage: React.StatelessFunctionalComponent<Props>);

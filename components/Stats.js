@@ -41,13 +41,18 @@ const Badge = ({ children, trending }: BadgeProps) => {
 type Props = {||};
 
 const Stats = () => {
+  const [mounted, setMounted] = React.useState(false);
   const people = useStore((store) => store.people);
   const byDate = useStore((store) => store.byDate);
   const days = Object.keys(byDate);
   const hours = people.reduce((prev, next) => prev + Number(next.duration), 0);
-  const avgTime = days.length
-    ? Math.round((hours / days.length) * 100) / 100
-    : 0;
+  const encounters = mounted ? people.length : 0;
+  const avgTime =
+    mounted && days.length ? Math.round((hours / days.length) * 100) / 100 : 0;
+  const peopleLeft = mounted ? people.length : 0;
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <>
       <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -60,7 +65,7 @@ const Stats = () => {
           </dt>
           <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div className="flex md:block items-baseline text-2xl font-semibold text-indigo-600">
-              <span className="block">{people.length}</span>
+              <span className="block">{encounters}</span>
               {/* <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
                 from 5
               </span> */}
@@ -86,7 +91,7 @@ const Stats = () => {
           <dt className="text-base font-normal text-gray-900">Remaining</dt>
           <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div className="flex md:block items-baseline text-2xl font-semibold text-indigo-600">
-              {12 - people.length}
+              {peopleLeft}
               {/* <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
                 from 4
               </span> */}

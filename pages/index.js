@@ -39,9 +39,13 @@ type ListProps = {
 dayjs.extend(relativeTime);
 
 const List = ({ days }: ListProps) => {
-  const startDate = dayjs();
-  const dayArray = new Array(days).fill();
+  const today = dayjs();
   const byDate = useStore((store) => store.byDate);
+  const dayArray = new Array(days).fill();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <Layout>
       <div className="md:flex-row md:items-center md:justify-between">
@@ -72,9 +76,11 @@ const List = ({ days }: ListProps) => {
         <div className=" mt-5 bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
           <ol className="divide-y w-full">
             {dayArray.map((_, index) => {
-              const date = startDate.subtract(index, 'd');
+              const date = today.subtract(index, 'd');
               const isToday = index === 0;
-              const peeps = byDate[date.format('YYYY-MM-DD')] || [];
+              const peeps = mounted
+                ? byDate[date.format('YYYY-MM-DD')] || []
+                : [];
               return (
                 <div key={nanoid()} className="py-4 px-4">
                   <Link
@@ -96,9 +102,9 @@ const List = ({ days }: ListProps) => {
                       </span>
                       <span className="inline-block ml-auto">
                         {peeps.map((person, idx) => (
-                          <>
-                            <Avatar overlap={!!idx}>{person.name}</Avatar>
-                          </>
+                          <Avatar key={`avatar-${person.name}`} overlap={!!idx}>
+                            {person.name}
+                          </Avatar>
                         ))}
                       </span>
                       <span className="inline-block ">
