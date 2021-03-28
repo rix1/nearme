@@ -37,8 +37,6 @@ const DatePage = ({}: Props) => {
     }
   }, [date]);
 
-  const [open, setOpen] = React.useState(true);
-
   function addPerson(event) {
     event.preventDefault();
     const name = event.target.name.value;
@@ -61,7 +59,7 @@ const DatePage = ({}: Props) => {
 
   return (
     <Layout>
-      <Collapsible.Root disabled={!open}>
+      <Collapsible.Root>
         <DayHeading label={dayjs(storedDate).format('DD-MM-YYYY')}>
           {dayjs(storedDate).format('dddd D MMMM')}
         </DayHeading>
