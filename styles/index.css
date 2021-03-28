@@ -11,3 +11,40 @@
 /* Stop purging. */
 
 /* Your own custom utilities */
+
+
+@keyframes slideDown {
+  0% {
+    height: 0;
+    opacity: 0;
+  }
+  75% {
+    height: var(--radix-collapsible-content-height);
+  }
+  100% {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.collapsible[data-state="open"]{
+  animation: slideDown 300ms ease-out
+}
+
+.collapsible[data-state="closed"]{
+  animation: slideUp 300ms ease-out
+}

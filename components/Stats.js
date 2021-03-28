@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { useStore } from '../store';
 
 type BadgeProps = {|
   children: React.Node,
@@ -7,12 +8,21 @@ type BadgeProps = {|
 |};
 
 const Badge = ({ children, trending }: BadgeProps) => {
-  const color = trending === 'up' ? 'red' : 'green';
+  const colors =
+    trending === 'up'
+      ? 'bg-red-100 text-red-800'
+      : 'bg-green-100 text-green-800';
   return (
     <div
-      className={`inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium bg-${color}-100 text-${color}-800 md:mt-2 lg:mt-0`}>
+      className={[
+        `inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium md:mt-2 lg:mt-0`,
+        colors,
+      ].join(' ')}>
       <svg
-        className={`-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-${color}-500`}
+        className={[
+          '-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5',
+          trending === 'down' && 'transform scale-[-1]',
+        ].join(' ')}
         fill="currentColor"
         viewBox="0 0 20 20"
         aria-hidden="true">
@@ -31,6 +41,13 @@ const Badge = ({ children, trending }: BadgeProps) => {
 type Props = {||};
 
 const Stats = () => {
+  const people = useStore((store) => store.people);
+  const byDate = useStore((store) => store.byDate);
+  const days = Object.keys(byDate);
+  const hours = people.reduce((prev, next) => prev + Number(next.duration), 0);
+  const avgTime = days.length
+    ? Math.round((hours / days.length) * 100) / 100
+    : 0;
   return (
     <>
       <h3 className="text-lg leading-6 font-medium text-gray-900">
@@ -43,36 +60,38 @@ const Stats = () => {
           </dt>
           <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div className="flex md:block items-baseline text-2xl font-semibold text-indigo-600">
-              <span className="block">8</span>
-              <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
+              <span className="block">{people.length}</span>
+              {/* <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
                 from 5
-              </span>
+              </span> */}
             </div>
-            <Badge trending="up">12%</Badge>
+            {/* <Badge trending="up">12%</Badge> */}
           </dd>
         </div>
         <div className="px-4 py-5 sm:p-6">
-          <dt className="text-base font-normal text-gray-900">Avg. per day</dt>
+          <dt className="text-base font-normal text-gray-900">
+            Avg. time spent per day
+          </dt>
           <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div className="flex md:block items-baseline text-2xl font-semibold text-indigo-600">
-              2.34
-              <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
+              {avgTime}
+              {/* <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
                 from 1
-              </span>
+              </span> */}
             </div>
-            <Badge trending="up">2.02%</Badge>
+            {/* <Badge trending="up">%</Badge> */}
           </dd>
         </div>
         <div className="px-4 py-5 sm:p-6">
           <dt className="text-base font-normal text-gray-900">Remaining</dt>
           <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
             <div className="flex md:block items-baseline text-2xl font-semibold text-indigo-600">
-              2
-              <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
+              {12 - people.length}
+              {/* <span className="block ml-2 md:ml-0 text-sm font-medium text-gray-500">
                 from 4
-              </span>
+              </span> */}
             </div>
-            <Badge trending="down">4.05%</Badge>
+            {/* <Badge trending="down">4.05%</Badge> */}
           </dd>
         </div>
       </dl>

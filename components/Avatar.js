@@ -31,7 +31,8 @@ const Avatar = ({ children, overlap = false, ...rest }: AvatarProps) => {
           cx="12"
           cy="12"
           r="10"
-          fill="url(#gradient)"
+          // fill="url(#gradient)"
+          fill={colorHash(children).hex}
           stroke="white"
           strokeWidth="1px"
         />
@@ -43,7 +44,7 @@ const Avatar = ({ children, overlap = false, ...rest }: AvatarProps) => {
           style={{ fontSize: '80%' }}
           verticalAnchor="middle"
           textAnchor="middle">
-          {children.charAt(0)}
+          {children.charAt(0).toUpperCase()}
         </Text>
       </Group>
     </svg>

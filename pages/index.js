@@ -9,6 +9,7 @@ import Avatar from '../components/Avatar';
 import Chevron from '../components/Chevron';
 import Layout from '../components/Layout';
 import Stats from '../components/Stats';
+import { useStore } from '../store';
 
 function stateReducer(state, action) {
   switch (action.type) {
@@ -40,6 +41,7 @@ dayjs.extend(relativeTime);
 const List = ({ days }: ListProps) => {
   const startDate = dayjs();
   const dayArray = new Array(days).fill();
+  const byDate = useStore((store) => store.byDate);
   return (
     <Layout>
       <div className="md:flex-row md:items-center md:justify-between">
@@ -72,6 +74,7 @@ const List = ({ days }: ListProps) => {
             {dayArray.map((_, index) => {
               const date = startDate.subtract(index, 'd');
               const isToday = index === 0;
+              const peeps = byDate[date.format('YYYY-MM-DD')] || [];
               return (
                 <div key={nanoid()} className="py-4 px-4">
                   <Link
@@ -92,9 +95,11 @@ const List = ({ days }: ListProps) => {
                         {date.format('dddd D MMM')}
                       </span>
                       <span className="inline-block ml-auto">
-                        <Avatar>P</Avatar>
-                        <Avatar overlap>B</Avatar>
-                        <Avatar overlap>R</Avatar>
+                        {peeps.map((person, idx) => (
+                          <>
+                            <Avatar overlap={!!idx}>{person.name}</Avatar>
+                          </>
+                        ))}
                       </span>
                       <span className="inline-block ">
                         <Chevron />
