@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { useStore } from '../store';
+import { MAX_ENCOUNTERS } from '../store/constants';
 
 type BadgeProps = {|
   children: React.Node,
@@ -49,7 +50,7 @@ const Stats = () => {
   const encounters = mounted ? people.length : 0;
   const avgTime =
     mounted && days.length ? Math.round((hours / days.length) * 100) / 100 : 0;
-  const peopleLeft = mounted ? people.length : 0;
+  const peopleLeft = mounted ? MAX_ENCOUNTERS - people.length : 0;
   React.useEffect(() => {
     setMounted(true);
   }, []);

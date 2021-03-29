@@ -10,38 +10,16 @@ import Chevron from '../components/Chevron';
 import Layout from '../components/Layout';
 import Stats from '../components/Stats';
 import { useStore } from '../store';
+import { DAYS_TOTAL } from '../store/constants';
 
-function stateReducer(state, action) {
-  switch (action.type) {
-    case 'ADD_PERSON':
-      return {
-        ...state,
-      };
-
-    default:
-      throw new Error(`Unhandled action type: ${action.type}`);
-  }
-}
-
-const Home = () => {
-  const days = 12;
-  return (
-    <div className="">
-      <List days={days} />
-    </div>
-  );
-};
-
-type ListProps = {
-  days: number,
-};
+type HomeProps = {||};
 
 dayjs.extend(relativeTime);
 
-const List = ({ days }: ListProps) => {
+const Home = () => {
   const today = dayjs();
   const byDate = useStore((store) => store.byDate);
-  const dayArray = new Array(days).fill();
+  const dayArray = new Array(DAYS_TOTAL).fill();
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
     setMounted(true);
@@ -122,4 +100,4 @@ const List = ({ days }: ListProps) => {
   );
 };
 
-export default (Home: React.StatelessFunctionalComponent<{||}>);
+export default (Home: React.StatelessFunctionalComponent<HomeProps>);
