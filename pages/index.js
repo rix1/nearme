@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { nanoid } from 'nanoid';
 import Link from 'next/link';
+
 import Avatar from '../components/Avatar';
 import Chevron from '../components/Chevron';
 import Layout from '../components/Layout';
@@ -23,6 +24,22 @@ const Home = () => {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
     setMounted(true);
+    // console.log(<Peer />);
+    const Peer = require('peerjs').default;
+    const peer = new Peer('home-client', {
+      host: 'localhost',
+      port: 9000,
+      path: '/myapp',
+    });
+
+    peer.on('connection', (conn) => {
+      conn.on('data', (data) => {
+        console.log(data);
+      });
+      conn.on('open', () => {
+        conn.send('morning from home-client!');
+      });
+    });
   }, []);
   return (
     <Layout>

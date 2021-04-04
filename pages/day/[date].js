@@ -28,6 +28,7 @@ const DatePage = ({}: Props) => {
   const [storedDate, setStoredDate] = React.useState(date);
   const addPersonToStore = useStore((store) => store.addPerson);
   const byDate = useStore((store) => store.byDate);
+  const [peer, setPeer] = React.useState(null);
 
   const peeps = byDate[storedDate] || [];
 
@@ -36,6 +37,27 @@ const DatePage = ({}: Props) => {
       setStoredDate(date);
     }
   }, [date]);
+
+  React.useEffect(() => {
+    // eslint-disable-next-line global-require
+    const Peer = require('peerjs').default;
+    const peerClient = new Peer('day-client', {
+      host: 'localhost',
+      port: 9000,
+      path: '/myapp',
+    });
+
+    peerClient.on('connection', (conn) => {
+      conn.on('data', (data) => {
+        console.log(data);
+      });
+      conn.on('open', () => {
+        conn.send('hello from day-client!');
+      });
+    });
+
+    setPeer(peerClient);
+  }, []);
 
   function addPerson(event) {
     event.preventDefault();
@@ -62,6 +84,20 @@ const DatePage = ({}: Props) => {
       <Collapsible.Root>
         <DayHeading label={dayjs(storedDate).format('DD-MM-YYYY')}>
           {dayjs(storedDate).format('dddd D MMMM')}
+          <button
+            type="button"
+            onClick={() => {
+              if (peer) {
+                console.log(peer);
+                const conn = peer.connect('home-client');
+                conn.on('open', () => {
+                  conn.send('Hi Home, this is Day client speaking');
+                });
+              }
+            }}
+            className="ml-4 relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+            <span>Connect</span>
+          </button>
         </DayHeading>
         <Collapsible.Content className="collapsible">
           <div className="pb-8">
