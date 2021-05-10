@@ -3,11 +3,6 @@ import create from 'zustand';
 import { persist } from 'zustand/middleware';
 import dayjs from 'dayjs';
 
-// type Person = {|
-//   name: string,
-//   date: Date,
-// |};
-
 // type State = {|
 //   people: Person[],
 //   addPerson: (newPerson: Person) => void,

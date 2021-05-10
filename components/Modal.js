@@ -5,9 +5,10 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog';
 type Props = {
   title: React.Node,
   body: React.Node,
+  children: React.Node,
 };
 
-const Modal = ({ children, title, body }: Props) => {
+const Modal = ({ children, title, body }: Props): React.Node => {
   return (
     <AlertDialog.Root>
       <AlertDialog.Overlay className="bg-white bg-opacity-40 fixed fill bottom-0 left-0 right-0 top-0" />

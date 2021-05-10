@@ -14,6 +14,12 @@ import { useStore } from '../../store';
 
 type Props = {||};
 
+type Person = {|
+  name: string,
+  date: Date,
+  duration: number,
+|};
+
 function parsePerson(personString) {
   const parsed = JSON.parse(personString);
   return {
