@@ -16,10 +16,12 @@ type HomeProps = {||};
 
 dayjs.extend(relativeTime);
 
+const dayArray = new Array(DAYS_TOTAL).fill().map(() => nanoid());
+
 const Home = () => {
   const today = dayjs();
   const byDate = useStore((store) => store.byDate);
-  const dayArray = new Array(DAYS_TOTAL).fill();
+
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
     setMounted(true);
@@ -53,14 +55,14 @@ const Home = () => {
         <h3 className="text-lg leading-6 font-medium text-gray-900">History</h3>
         <div className=" mt-5 bg-white px-4 py-5 shadow sm:rounded-lg sm:px-6">
           <ol className="divide-y w-full">
-            {dayArray.map((_, index) => {
+            {dayArray.map((id, index) => {
               const date = today.subtract(index, 'd');
               const isToday = index === 0;
               const peeps = mounted
                 ? byDate[date.format('YYYY-MM-DD')] || []
                 : [];
               return (
-                <div key={nanoid()} className="py-4 px-4">
+                <div key={id} className="py-4 px-4">
                   <Link
                     href={`/day/${date.format('YYYY-MM-DD')}`}
                     scroll={false}>
