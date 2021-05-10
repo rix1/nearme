@@ -11,7 +11,7 @@
     "eslint": "eslint ."
   },
   "dependencies": {
-    "@fullhuman/postcss-purgecss": "^3.0.0",
+    "@fullhuman/postcss-purgecss": "^4.0.3",
     "@otovo/eslint-config-otovo": "^4.0.0",
     "@radix-ui/react-alert-dialog": "^0.0.15",
     "@radix-ui/react-collapsible": "^0.0.13",
@@ -24,7 +24,7 @@
     "dayjs": "^1.9.5",
     "nanoid": "^3.1.22",
     "next": "^10.2.0",
-    "postcss-cli": "^8.2.0",
+    "postcss-cli": "^8.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hot-toast": "^1.0.2",
@@ -34,11 +34,10 @@
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-flow": "^7.12.1",
-    "@tailwindcss/jit": "^0.1.11",
     "flow-bin": "^0.137.0",
-    "postcss": "^8.2.8",
-    "postcss-flexbugs-fixes": "^5.0.1",
+    "postcss": "^8.2.15",
+    "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "^2.0.4"
+    "tailwindcss": "^2.1.2"
   }
 }
