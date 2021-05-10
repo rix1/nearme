@@ -21,6 +21,45 @@ const dayArray = new Array(DAYS_TOTAL).fill().map(() => nanoid());
 const Home = () => {
   const today = dayjs();
   const byDate = useStore((store) => store.byDate);
+  const dayItems = React.useRef([]);
+  const [currentFocus, setCurrentFocus] = React.useState(0);
+
+  // inputRef.current[idx].focus();
+
+  // <input ref={(el) => (inputRef.current[idx] = el)} />;
+
+  React.useEffect(() => {
+    console.log('useeffect');
+    function onKeyDown(e: KeyboardEvent) {
+      e.preventDefault();
+      if (e.code === 'ArrowUp' && currentFocus > 0) {
+        setCurrentFocus((prev) => prev - 1);
+      }
+      if (e.code === 'ArrowDown' && currentFocus < DAYS_TOTAL - 1) {
+        setCurrentFocus((prev) => prev + 1);
+      }
+    }
+
+    function onKeyUp(e: KeyboardEvent) {}
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (dayItems.current[currentFocus]) {
+      console.log(
+        currentFocus,
+        'setting focus to',
+        dayItems.current[currentFocus],
+      );
+      dayItems.current[currentFocus].focus();
+    }
+  }, [currentFocus]);
 
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
@@ -62,12 +101,16 @@ const Home = () => {
                 ? byDate[date.format('YYYY-MM-DD')] || []
                 : [];
               return (
-                <div key={id} className="py-4 px-4">
+                <div key={id} className="py-4 px-4 focus:outline-black">
                   <Link
                     href={`/day/${date.format('YYYY-MM-DD')}`}
                     scroll={false}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a className="flex items-center justify-between cursor-pointer">
+                    <a
+                      className="flex items-center justify-between cursor-pointer"
+                      ref={(el) => {
+                        dayItems.current[index] = el;
+                      }}>
                       <span className="">
                         {isToday ? (
                           <span className="text-gray-500 text-sm block">
