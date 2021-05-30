@@ -5,7 +5,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { nanoid } from 'nanoid';
 import Link from 'next/link';
-import Avatar from '../components/Avatar';
+import Avatar from 'boring-avatars';
+
 import Chevron from '../components/Chevron';
 import Layout from '../components/Layout';
 import Stats from '../components/Stats';
@@ -82,9 +83,19 @@ const Home = () => {
                       </span>
                       <span className="inline-block ml-auto">
                         {peeps.map((person, idx) => (
-                          <Avatar key={`avatar-${person.name}`} overlap={!!idx}>
-                            {person.name}
-                          </Avatar>
+                          <Avatar
+                            size={30}
+                            className="inline-block w-8 flex-initial -ml-3 bg-white rounded-full"
+                            name={person.name}
+                            variant="marble"
+                            colors={[
+                              '#A3A948',
+                              '#EDB92E',
+                              '#F85931',
+                              '#CE1836',
+                              '#009989',
+                            ]}
+                          />
                         ))}
                       </span>
                       <span className="inline-block ">

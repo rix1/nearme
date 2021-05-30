@@ -1,5 +1,7 @@
 // @flow
 import * as React from 'react';
+import { sub } from 'date-fns';
+
 import { useStore } from '../store';
 import { MAX_ENCOUNTERS } from '../store/constants';
 
@@ -43,8 +45,12 @@ type Props = {||};
 
 const Stats = () => {
   const [mounted, setMounted] = React.useState(false);
-  const people = useStore((store) => store.people);
+  const allPeople = useStore((store) => store.people);
   const byDate = useStore((store) => store.byDate);
+
+  const dateLimit = sub(new Date(), { days: 12 });
+  const people = allPeople.filter((el) => new Date(el.date) > dateLimit);
+
   const days = Object.keys(byDate);
   const hours = people.reduce((prev, next) => prev + Number(next.duration), 0);
   const encounters = mounted ? people.length : 0;
